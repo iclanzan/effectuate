@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+'use strict'
+
+const isNumber = require('is-number')
+const path = require('path')
+const meow = require('meow')
+const getStdin = require('get-stdin')
+
+const emptyArray = []
+
+const cli = meow(`
+  Usage
+    $ effectuate script.js [arguments]
+
+  Examples
+    $ effectuate add.js 5 12
+    17
+
+    $ echo 5 | effectuate add.js 9
+    14
+`)
+
+const script = cli.input[0]
+
+if (!script) {
+  cli.showHelp()
+}
+
+getStdin()
+  .then(stdin => {
+    // remove trailing new line from stdin
+    const input = stdin.slice(0, -1)
+    const task = require(path.resolve(process.cwd(), script))
+    const args = emptyArray.concat(
+      isNumber(input) ? +input : (input || emptyArray),
+      cli.input.slice(1),
+      Object.keys(cli.flags).length ? cli.flags : emptyArray
+    )
+
+    return task.apply(null, args)
+  })
+  .then(value => {
+    console.log(value)
+    return value
+  })
