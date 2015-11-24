@@ -41,6 +41,8 @@ getStdin()
     return task.apply(null, args)
   })
   .then(value => {
-    console.log(value)
+    if (value !== undefined) {
+      console.log(value)
+    }
     return value
   })
