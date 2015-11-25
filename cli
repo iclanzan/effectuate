@@ -5,9 +5,19 @@
 const isNumber = require('is-number')
 const path = require('path')
 const meow = require('meow')
-const getStdin = require('get-stdin')
 
-const emptyArray = []
+const stdin = process.stdin
+
+const write = value => {
+  if (value !== undefined) {
+    console.log(value)
+  }
+  return value
+}
+
+const run = (job, args) => {
+  return Promise.resolve(job.apply(null, args)).then(write)
+}
 
 const cli = meow(`
   Usage
@@ -27,22 +37,20 @@ if (!script) {
   cli.showHelp()
 }
 
-getStdin()
-  .then(stdin => {
-    // remove trailing new line from stdin
-    const input = stdin.slice(0, -1)
-    const task = require(path.resolve(process.cwd(), script))
-    const args = emptyArray.concat(
-      isNumber(input) ? +input : (input || emptyArray),
-      cli.input.slice(1),
-      Object.keys(cli.flags).length ? cli.flags : emptyArray
-    )
+const task = require(path.resolve(process.cwd(), script))
+const input = cli.input.slice(1).concat(
+  Object.keys(cli.flags).length ? cli.flags : []
+)
 
-    return task.apply(null, args)
-  })
-  .then(value => {
-    if (value !== undefined) {
-      console.log(value)
+if (stdin.isTTY) {
+  run(task, input)
+} else {
+  stdin.setEncoding('utf8')
+  stdin.on('readable', () => {
+    const chunk = stdin.read()
+
+    if (chunk != null) {
+      run(task, [isNumber(chunk) ? +chunk : chunk].concat(input))
     }
-    return value
   })
+}
