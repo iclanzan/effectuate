@@ -1,6 +1,6 @@
 {
   "name": "effectuate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Run exported function from any script passing in arguments from the command line. First argument can be passed in through stdin.",
   "bin": "./cli",
   "files": [
