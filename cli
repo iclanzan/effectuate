@@ -2,43 +2,49 @@
 
 'use strict'
 
-const isNumber = require('is-number')
-const path = require('path')
-const meow = require('meow')
+var isNumber = require('is-number')
+var path = require('path')
+var meow = require('meow')
 
-const stdin = process.stdin
+var stdin = process.stdin
 
-const write = value => {
+var write = function (value) {
   if (value !== undefined) {
     console.log(value)
   }
   return value
 }
 
-const run = (job, args) => {
-  return Promise.resolve(job.apply(null, args)).then(write)
+var run = function (job, args) {
+  var result = job.apply(null, args)
+
+  if (result && typeof result.then === 'function') {
+    result.then(write)
+  } else {
+    write(result)
+  }
 }
 
-const cli = meow(`
-  Usage
-    $ effectuate script.js [arguments]
+var cli = meow([
+  'Usage',
+  '  $ effectuate script.js [arguments]',
+  '',
+  'Examples',
+  '  $ effectuate add.js 5 12',
+  '  17',
+  '',
+  '  $ echo 5 | effectuate add.js 9',
+  '  14'
+])
 
-  Examples
-    $ effectuate add.js 5 12
-    17
-
-    $ echo 5 | effectuate add.js 9
-    14
-`)
-
-const script = cli.input[0]
+var script = cli.input[0]
 
 if (!script) {
   cli.showHelp()
 }
 
-const task = require(path.resolve(process.cwd(), script))
-const input = cli.input.slice(1).concat(
+var task = require(path.resolve(process.cwd(), script))
+var input = cli.input.slice(1).concat(
   Object.keys(cli.flags).length ? cli.flags : []
 )
 
@@ -46,8 +52,8 @@ if (stdin.isTTY) {
   run(task, input)
 } else {
   stdin.setEncoding('utf8')
-  stdin.on('readable', () => {
-    const chunk = stdin.read()
+  stdin.on('readable', function () {
+    var chunk = stdin.read()
 
     if (chunk != null) {
       run(task, [isNumber(chunk) ? +chunk : chunk].concat(input))
