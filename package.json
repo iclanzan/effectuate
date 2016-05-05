@@ -7,11 +7,8 @@
     "effectuate-byline": "./effectuate-byline",
     "effectuate-piped": "./effectuate-piped"
   },
-  "files": [
-    "cli"
-  ],
   "scripts": {
-    "test": "eslint cli"
+    "test": "eslint index.js"
   },
   "author": "",
   "license": "MIT",
