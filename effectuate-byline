@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+'use strict'
+
+var split = require('split2')
+var effectuate = require('./')
+
+var run = effectuate([
+  'Usage',
+  '  $ effectuate-byline script.js [arguments]',
+  '',
+  'Examples',
+  '  $ echo -e "ba\na\na" | effectuate-byline concat.js n',
+  '  banana'
+])
+
+process.stdin.pipe(split()).on('data', run)

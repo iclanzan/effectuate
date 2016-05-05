@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+'use strict'
+
+var getStdin = require('get-stdin')
+var effectuate = require('./')
+
+var run = effectuate([
+  'Usage',
+  '  $ effectuate-piped script.js [arguments]',
+  '',
+  'Examples',
+  '  $ echo 5 | effectuate-piped add.js 9',
+  '  14'
+])
+
+getStdin().then(run)

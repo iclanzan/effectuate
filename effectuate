@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+'use strict'
+
+var effectuate = require('./')
+
+var run = effectuate([
+  'Usage',
+  '  $ effectuate script.js [arguments]',
+  '',
+  'Examples',
+  '  $ effectuate add.js 5 12',
+  '  17'
+])
+
+run()
