@@ -30,7 +30,7 @@ module.exports = config => config.first + ' ' + config.last
 ```
 
 ```sh
-$ effectuate getName --first=John --last=Doe
+$ effectuate ./getName --first=John --last=Doe
 John Doe
 ```
 
@@ -42,8 +42,17 @@ module.exports = n => n * 2
 ```
 
 ```sh
-$ echo 10 | effectuate double
+$ echo 10 | effectuate-piped ./double
 20
+```
+
+Can also provide stdin line by line:
+
+```sh
+$ echo -e "1\n2\n3" | effectuate-byline ./double
+2
+4
+6
 ```
 
 ### Returning a promise
@@ -56,6 +65,6 @@ module.exports = value => new Promise(
 ```
 
 ```sh
-$ effectuate delay foo
+$ effectuate ./delay foo
 foo
 ```
