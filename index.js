@@ -1,5 +1,6 @@
 'use strict'
 
+var requireRelative = require('require-relative')
 var isNumber = require('is-number')
 var meow = require('meow')
 
@@ -36,7 +37,8 @@ module.exports = function (help) {
     cli.showHelp()
   }
 
-  var task = require(script)
+  var task = requireRelative(script)
+
   var input = cli.input.slice(1).concat(
     Object.keys(cli.flags).length ? cli.flags : []
   )
